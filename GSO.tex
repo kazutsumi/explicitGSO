@@ -1,0 +1,307 @@
+\documentclass[11pt, uplatex, dvipdfmx]{jsarticle} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts,fancyhdr, enumerate, braket, setspace, graphicx, bm, multirow, bigdelim}
+\newcommand{\ds}{\displaystyle}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{定理}
+\newtheorem*{theorem*}{定理}
+\newtheorem*{definition}{定義}
+\newtheorem*{remark}{注意}
+\renewcommand{\proofname}{\textbf{証明}}
+
+
+\renewcommand{\arraystretch}{1.3}
+
+\pagestyle{fancy}
+\chead{Gram-Schmidt の正規直交化法に関する明示公式}
+
+\begin{document}
+
+$\{\bm{v}_1, \ldots, \bm{v}_n\}$ を内積空間 $V$ の基底とし，その Gram
+行列を
+$G = \left[ g_{ij} \right]= \left[ \left(\bm{v}_i, \bm{v}_j
+  \right)\right]$ とする．$G$ は正定値対称行列である．$V$ の基
+底 $\{\bm{v}_1, \ldots, \bm{v}_n\}$ に Gram-Schmidt の正規直交化法を適
+用して得られる $V$ の正規直交基底 $\{\bm{u}_1, \ldots, \bm{u}_n\}$ の明示公式を記す．
+
+$G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を $\tilde{g}^{(k)}_{ij}$ とする．つまり，
+\[
+  G^{(k)} := \left[
+    \begin{array}{ccc}
+      g_{11} & \cdots & g_{1k}\\
+      \vdots & \ddots & \vdots\\
+      g_{k1} & \cdots & g_{kk}
+    \end{array}
+  \right], \quad \tilde{g}^{(k)}_{ij} := (-1)^{i+j} \left|G^{(k)}_{ij}\right|
+\]
+とする．ここで，$G^{(k)}_{ij}$ は $G^{(k)}$ から $i$ 行と $j$ 列を取り除いた $k-1$ 次行列を表す．
+
+\begin{theorem*}[Gram-Schmidt の正規直交化法の明示公式]
+  上の設定のもとで
+  \[
+    \bm{w}_1= \bm{v}_1, \quad \bm{w}_k =
+    \frac{1}{\left|G^{(k-1)}\right|} \sum_{i=1}^{k}
+    \tilde{g}^{(k)}_{ik} \bm{v}_i = \frac{1}{\left|G^{(k-1)}\right|}\left|
+      \begin{array}{ccc}
+        g_{11} & \cdots & g_{1k}\\
+        \vdots & \ddots & \vdots\\
+        g_{k-1,k} & \cdots & g_{k-1, k}\\
+        \bm{v}_1 & \cdots & \bm{v}_k
+      \end{array}
+    \right| \; ( 2 \leq k \leq n)
+  \]
+  とすれば，$\bm{w}_1, \ldots, \bm{w}_n$ は互いに直交する．さらに，
+  \[
+    (\bm{w}_1, \bm{w}_1) = g_{11}, \quad (\bm{w}_k, \bm{w}_k) =
+    \frac{\left| G^{(k)}\right|}{\left|G^{(k-1)}\right|} \; (2 \leq k \leq n)
+  \]
+  となる．これより
+  \[
+    \bm{u}_1 = \frac{\bm{w}_1}{\sqrt{g_{11}}}, \quad \bm{u}_k =
+    \sqrt{\frac{\left|G^{(k-1)}\right|}{\left|G^{(k)}\right|}}~ \bm{w}_k \; (2 \leq k \leq n)
+  \]
+  とすれば，$\{\bm{u}_1, \ldots, \bm{u}_n\}$ は $V$ の正規直交基底である．つまり，
+  \[
+    \mu_{ij} = \frac{\tilde{g}^{(j)}_{ij}}{\tilde{g}^{(j)}_{jj}}
+    = \frac{\tilde{g}^{(j)}_{ij}}{\left|G^{(j-1)}\right|}, \quad
+    \nu_{i} = \sqrt{\frac{\left|G^{(i-1)}\right|}{\left|G^{(i)}\right|}}
+  \]
+  とおいて
+  \[
+    M = \left[
+      \begin{array}{ccccc}
+        1 & \mu_{12} & \mu_{13} & \cdots & \mu_{1n}\\
+         & 1 & \mu_{23} & \cdots & \mu_{2n}\\
+         &  & 1 & \cdots & \mu_{3n}\\
+         &  &  & \ddots & \vdots\\
+        O &  &  &  & 1
+      \end{array}
+    \right], \quad N= \left[
+      \begin{array}{ccccc}
+        \sqrt{1/g_{11}} & & & & O\\
+                        & \nu_{2} & & & \\
+                        & & \nu_{3} & &\\
+                        & && \ddots & \\
+        O & & &&  \nu_{n}
+      \end{array}
+    \right]
+  \]
+  とすれば，以下が成り立つ．
+  \[
+    \begin{aligned}
+      \left(\bm{u}_1, \bm{u}_2, \cdots, \bm{u}_n\right) = \left(\bm{w}_1, \bm{w}_2, \cdots, \bm{w}_n\right) N=
+    \left( \bm{v}_1 , \bm{v}_2, \cdots, \bm{v}_n\right)MN
+  \end{aligned}
+  \]
+\end{theorem*}
+
+\begin{proof}
+  Gram-Shcmidt の正規直交化法により
+  \[
+    \bm{w}_1 = \bm{v}_1, \quad \bm{w}_k = \bm{v}_k - \sum_{i=1}^{k-1}
+    \frac{(\bm{v}_k, \bm{w}_{i})}{(\bm{w}_i,\bm{w}_i)}\bm{w}_i \; (2 \leq k \leq n)
+  \]
+  \[
+    \bm{u}_i = \frac{\bm{w}_i}{\|\bm{w}_i\|} \; (1 \leq i \leq n)
+  \]
+  とすれば，$\{\bm{u}_1, \ldots, \bm{u}_n\}$ は $V$ の正規直交基底となる．このとき，各 $k=2,\ldots, n$ に対して
+  \[
+    \langle \bm{w}_1, \ldots, \bm{w}_{k-1}\rangle =\langle \bm{v}_1,
+    \ldots, \bm{v}_{k-1}\rangle
+  \]
+  なので，
+  \[
+    \bm{w}_k = \sum_{i=1}^{k-1}\mu_{i k} \bm{v}_i + \bm{v}_k = \left(\bm{v}_1, \ldots, \bm{v}_{k}\right) \left[
+      \begin{array}{c}
+        \mu_{1k}\\
+        \vdots\\
+        \mu_{k-1,k}\\
+        1
+      \end{array}
+    \right]\; (\mu_{ik} \in \mathbb{R})
+  \]
+  と書ける（添字の片方または両方が2文字以上になるときはコンマで区切る）．つ
+  まり，
+  \[
+    M = \left[
+      \begin{array}{ccccc}
+        1 & \mu_{12} & \mu_{13} & \cdots & \mu_{1n}\\
+          & 1 & \mu_{23} & \cdots & \mu_{2n}\\
+          &  & 1 & \cdots & \mu_{3n}\\
+          &  &  & \ddots & \vdots\\
+        O &  &  &  & 1
+      \end{array}
+    \right]
+  \]
+  によって $(\bm{w}_1, \ldots, \bm{w}_n) = (\bm{v}_1, \ldots,
+  \bm{v}_n) M$ と書ける．この各 $\mu_{ij}$ を決定する．
+  
+  各 $k=2,\ldots, n$ に対して
+  $\bm{w}_k \in \langle \bm{w}_1, \ldots, \bm{w}_{k-1}\rangle^{\perp} =
+  \langle\bm{v}_1, \ldots, \bm{v}_{k-1}\rangle^{\perp} $ なので，
+  \[
+    (\bm{v}_1, \bm{w}_k) = (\bm{v}_2, \bm{w}_k) = \cdots = (\bm{v}_{k-1}, \bm{w}_k) = 0
+  \]
+  である．従って，$\{\bm{e}_{1}, \ldots,
+  \bm{e}_k\}$ を $\mathbb{R}^k$ の標準基底とすれば，各 $i=1,
+  \ldots, k-1$ に対して
+  \[
+    0  =(\bm{v}_i, \bm{w}_k) = {}^{t}\bm{e}_{i}
+    G^{(k)} \left[
+      \begin{array}{c}
+        \mu_{1k}\\
+        \vdots\\
+            1
+      \end{array}
+    \right]
+    = \left[
+      \begin{array}{ccc}
+        g_{i1} & \cdots & g_{ik}
+      \end{array}
+    \right] \left[
+      \begin{array}{c}
+        \mu_{1k}\\
+        \vdots \\
+        1
+      \end{array}
+    \right] 
+  \]
+  である．従って，$\bm{g}_i = {}^{t}\left[
+    \begin{array}{ccc}
+      g_{i1} & \cdots & g_{ik}
+    \end{array}
+  \right], \; \bm{\mu}_k = {}^{t}\left[
+    \begin{array}{cccc}
+      \mu_{1k} & \cdots & \mu_{k-1,k} & 1
+    \end{array}
+  \right]$ とすれば，$\bm{\mu}_k$ は $\mathbb{R}^k$ の標準内積のもと
+  で $\bm{g}_1, \ldots, \bm{g}_{k-1}$ に直交するので以下のように書ける．
+  \[
+    \bm{\mu}_k = m_k \left|
+      \begin{array}{ccc}
+        g_{11} & \cdots & g_{1k}\\
+        \vdots & \ddots & \vdots\\
+        g_{k-1,1} & \cdots & g_{k-1,k}\\
+        \bm{e}_1 & \cdots & \bm{e}_k
+      \end{array}
+    \right| = m_k \sum_{j=1}^{k} \tilde{g}^{(k)}_{jk} \bm{e}_j
+    = m_k \left[
+      \begin{array}{c}
+        \tilde{g}^{(k)}_{1k}\\
+        \vdots\\
+        \tilde{g}^{(k)}_{kk}
+      \end{array}
+    \right]\quad ( m_k \in \mathbb{R})
+  \]
+  $\bm{\mu}_k$ の $\bm{e}_k$ 成分は $1$ なので
+  $m_k = 1/\tilde{g}^{(k)}_{kk} = 1/\left|G^{(k-1)}\right|$ である．以
+  上から，$k=2, \ldots, n$ に対して
+  \[
+    \bm{w}_k = (\bm{v}_1, \ldots, \bm{v}_k) \bm{\mu}_k
+    = \frac{1}{\left| G^{(k-1)} \right|} \sum_{i=1}^{k} \tilde{g}^{(k)}_{ik} \bm{v}_k
+    = \frac{1}{\left|G^{(k-1)} \right|}\left|
+      \begin{array}{ccc}
+        g_{11} & \cdots & g_{1k}\\
+        \vdots & \ddots & \vdots\\
+        g_{k-1,1} & \cdots & g_{k-1,k}\\
+        \bm{v}_1 & \cdots & \bm{v}_k
+      \end{array}
+    \right|
+  \]
+  を得る．さらに，$\|\bm{w}_1\| = \sqrt{g_{11}}$ であり，$k=2, \ldots, n$ に対しては
+  \[
+    \begin{aligned}
+      (\bm{w}_k, \bm{w}_k) &= {}^{t}\bm{\mu}_k G^{(k)} \bm{\mu}_k = {}^{t} \bm{\mu}_k \left[
+        \begin{array}{c}
+          {}^{t}\bm{e}_1 G^{(k)}\bm{\mu}_k\\
+          \vdots \\
+          {}^{t} \bm{e}_{k} G^{(k)}\bm{\mu}_k\\
+        \end{array}
+      \right] = \left[
+        \begin{array}{cccc}
+          \mu_{1k} & \cdots & \mu_{k-1,k} & 1
+        \end{array}
+      \right] \left[
+        \begin{array}{c}
+          0\\
+          \vdots\\
+          0\\
+          {}^{t}\bm{e}_k G^{(k)}\bm{\mu}_k
+        \end{array}
+      \right]\\
+      &= {}^{t} \bm{e}_k G^{(k)}\bm{\mu}_k = \sum_{i=1}^{k-1} g_{ki} \mu_{ik} + g_{kk}
+      = \frac{1}{\left| G^{(k-1)}\right|}\sum_{i=1}^{k}g_{ik} ~ \tilde{g}^{(k)}_{ik}
+      = \frac{\left| G^{(k)}\right|}{\left|G^{(k-1)}\right|}
+    \end{aligned}
+  \]
+  なので，$\nu_k = 1/\|\bm{w}_k\| = \sqrt{\left|G^{(k-1)}\right|/\left|G^{(k)}\right|}$ として
+  \[
+    N = \left[
+      \begin{array}{cccc}
+        1/\sqrt{g_{11}} & & & O\\
+                       & \nu_2 & & \\
+                       & & \ddots & \\
+        O & & & \nu_n
+      \end{array}
+    \right]
+  \]
+  によって $(\bm{u}_1, \ldots, \bm{u}_m) = (\bm{w}_1, \ldots, \bm{w}_n) N$ と書ける．
+\end{proof}
+
+
+\begin{remark}
+  各 $\bm{w}_k \; (k \geq 2)$ は $\bm{v}_1, \ldots, \bm{v}_{k-1}$ に直
+  交するので，
+  \[
+    \begin{aligned}
+      \bm{0}_{k-1} &= \left[
+        \begin{array}{c}
+          (\bm{v}_1, \bm{w}_k)\\
+          \vdots\\
+          (\bm{v}_{k-1}, \bm{w}_k)
+        \end{array}
+      \right] = \left[
+        \begin{array}{c}
+          {}^{t}\bm{e}_1 G^{(k)} \bm{\mu_k}\\
+          \vdots\\
+          {}^{t} \bm{e}_{k-1} G^{(k)} \bm{\mu}_k
+        \end{array}
+      \right] = \left[
+        \begin{array}{c}
+          {}^{t}\bm{e}_1 G^{(k)}\\
+          \vdots\\
+          {}^{t}\bm{e}_{k-1}G^{(k)}
+        \end{array}
+      \right] \bm{\mu}_k\\
+      &=\left[
+        \begin{array}{cc}
+          & g_{1k}\\
+          G^{(k-1)} & \vdots \\
+           & g_{k-1,k}
+        \end{array}
+      \right] \left[
+        \begin{array}{c}
+          \mu_{1k}\\
+          \vdots\\
+          \mu_{k-1,k}\\
+          1
+        \end{array}
+      \right]
+      = G^{(k-1)} \left[
+        \begin{array}{c}
+          \mu_{1k}\\
+          \vdots \\
+          \mu_{k-1,k}
+        \end{array}
+        \right] + \bm{g}_k
+    \end{aligned}
+  \]
+  となる．つまり，$\left[
+    \begin{array}{c}
+      \mu_{1k}\\
+      \vdots\\
+      \mu_{k-1,k}
+    \end{array}
+    \right]$ は連立1次方程式 $G^{(k-1)} \bm{x} = -\bm{g}_k$ の解でもある．
+\end{remark}
+\end{document}
