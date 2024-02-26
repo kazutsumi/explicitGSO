@@ -293,7 +293,13 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
           \vdots \\
           \mu_{k-1,k}
         \end{array}
-        \right] + \bm{g}_k
+        \right] + \left[
+          \begin{array}{c}
+            g_{1k}\\
+            \vdots\\
+            g_{k-1,k}
+          \end{array}
+        \right]
     \end{aligned}
   \]
   となる．つまり，$\left[
@@ -302,6 +308,12 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
       \vdots\\
       \mu_{k-1,k}
     \end{array}
-    \right]$ は連立1次方程式 $G^{(k-1)} \bm{x} = -\bm{g}_k$ の解でもある．
+    \right]$ は連立1次方程式 $G^{(k-1)} \bm{x} = -\left[
+      \begin{array}{c}
+        g_{1k}\\
+        \vdots\\
+        g_{k-1,k}
+      \end{array}
+\right]$ の解でもある．
 \end{remark}
 \end{document}
