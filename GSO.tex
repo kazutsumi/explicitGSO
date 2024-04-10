@@ -1,61 +1,130 @@
 \documentclass[11pt, uplatex, dvipdfmx]{jsarticle} 
-\usepackage{amsmath,amsthm,amssymb,amsfonts,fancyhdr, enumerate, braket, setspace, graphicx, bm, multirow, bigdelim}
+\usepackage{amsmath,amsthm,amssymb,amsfonts,fancyhdr, enumerate, braket, setspace, graphicx, bm}
 \newcommand{\ds}{\displaystyle}
 
 \theoremstyle{definition}
-\newtheorem{theorem}{定理}
+\newtheorem{theorem}{定理}[section]
 \newtheorem*{theorem*}{定理}
 \newtheorem*{definition}{定義}
+\newtheorem{lemma}{補題}
 \newtheorem*{remark}{注意}
-\newtheorem*{example}{例}
+\newtheorem{example}{例}
+\newtheorem*{notation}{記号}
 \renewcommand{\proofname}{\textbf{証明}}
 
 
-\renewcommand{\arraystretch}{1.3}
+\renewcommand{\arraystretch}{1.2}
 
-\pagestyle{fancy}
+\pagestyle{plain}
 
-\rhead{}
-\lhead{}
 
-\chead{Gram-Schmidt の正規直交化法に関する明示公式}
+\title{Gram-Schmidt の正規直交化法について}
+\date{}
+
 
 \begin{document}
 
-$\{\bm{v}_1, \ldots, \bm{v}_n\}$ を実内積空間 $V$ の基底とし，その Gram
-行列を
-$G = \left[ g_{ij} \right]= \left[ \left(\bm{v}_i, \bm{v}_j
-  \right)\right]$ とする．$G$ は正定値対称行列である．$V$ の基
-底 $\{\bm{v}_1, \ldots, \bm{v}_n\}$ に Gram-Schmidt の正規直交化法を適
-用して得られる $V$ の正規直交基底 $\{\bm{u}_1, \ldots, \bm{u}_n\}$ の明示公式を記す．
+\maketitle
 
-$G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を $\tilde{g}^{(k)}_{ij}$ とする．つまり，
+\begin{abstract}
+  Gram-Schmidt の正規直交化法 (GSO) は内積空間の与えられた基底から正規
+  直交基底を構成する方法である．本稿では GSO により得られる直交基底およ
+  び正規直交基底の明示公式を与える．さらに，直交基底への変換行列を Gram
+  行列から行基本変形によって計算する方法についても述べる．
+\end{abstract}
+
+\section{はじめに}
+
+本稿では有限次元実内積空間のみを扱い，記号・記法は概ね\cite{miyake}の流
+儀に従う．
+
+実内積空間 $V$ の基底 $\{\bm{v}_1, \ldots, \bm{v}_n\}$ に対して
 \[
-  G^{(k)} := \left[
-    \begin{array}{ccc}
-      g_{11} & \cdots & g_{1k}\\
-      \vdots & \ddots & \vdots\\
-      g_{k1} & \cdots & g_{kk}
-    \end{array}
-  \right], \quad \tilde{g}^{(k)}_{ij} := (-1)^{i+j} \left|G^{(k)}_{ij}\right|
+  \bm{w}_1 = \bm{v}_1, \quad \bm{w}_k = \bm{v}_k - \sum_{i=1}^{k-1}
+  \frac{(\bm{v}_k, \bm{w}_i)}{(\bm{w}_i, \bm{w}_i)} \bm{w}_i \; (2 \leq k
+  \leq n)
 \]
-とする．ここで，$G^{(k)}_{ij}$ は $G^{(k)}$ から $i$ 行と $j$ 列を取り除いた $k-1$ 次行列を表す．
+とすると $\{\bm{w}_1, \ldots, \bm{w}_n\}$ は $V$ の直交基底であり，さら
+に，各 $k=1, \ldots, n$ に対して
+\[
+  \bm{u}_k = \frac{\bm{w}_k}{\|\bm{w}_k\|}
+\]
+とすれば $\{\bm{u}_1, \ldots, \bm{u}_n\}$ は $V$ の正規直交基底となる，
+というのが Gram-Schmidt の正規直交化法 (GSO) のアルゴリズムである．直交
+基底 $\{\bm{w}_1, \ldots, \bm{w}_n\}$ も正規直交基底
+$\{\bm{u}_1, \ldots, \bm{u}_n\}$ もはじめに与えられた基
+底 $\{\bm{v}_1, \ldots, \bm{v}_n\}$ の1次結合で表せるので，本稿ではその
+係数たちを明示する公式（定理\ref{thm:formula}）を与える．特に，
+\[
+  (\bm{w}_1, \ldots, \bm{w}_n) = (\bm{v}_1, \ldots, \bm{v}_n) M, \quad
+  (\bm{u}_1, \ldots, \bm{u}_n) = (\bm{w}_1, \ldots, \bm{w}_n)N
+\]
+となる基底の変換行列 $M, N $ を Gram 行列 $G=\left[(\bm{v}_i,
+  \bm{v}_j)\right]$ を用いて明示する．また，Gram 行列 $G$
+からの行基本変形によって変換行列 $M$ が求められることも紹介する．
 
-\begin{theorem*}[Gram-Schmidt の正規直交化法の明示公式]
-  上の設定のもとで
+
+\begin{notation}
+  正方行列 $G$ の $k$ 次主対角行列を $G^{(k)}$ と書き，その $(i,j)$ 余
+  因子を $\tilde{g}^{(k)}_{ij}$ と書く．つまり，
   \[
-    \bm{w}_1= \bm{v}_1, \quad \bm{w}_k =
-    \frac{1}{\left|G^{(k-1)}\right|} \sum_{i=1}^{k}
-    \tilde{g}^{(k)}_{ik} \bm{v}_i = \frac{1}{\left|G^{(k-1)}\right|}\left|
+    G^{(k)} := \left[
       \begin{array}{ccc}
         g_{11} & \cdots & g_{1k}\\
         \vdots & \ddots & \vdots\\
-        g_{k-1,k} & \cdots & g_{k-1, k}\\
+        g_{k1} & \cdots & g_{kk}
+      \end{array}
+    \right], \quad \tilde{g}^{(k)}_{ij} := (-1)^{i+j} \left|G^{(k)}_{ij}\right|
+  \]
+  とする．ここで，$G^{(k)}_{ij}$ は $G^{(k)}$ から $i$ 行と $j$ 列を取
+  り除いた $k-1$ 次正方行列を表す．
+\end{notation}
+
+\section{GSO による直交基底，正規直交基底の明示公式}
+
+実内積空間 $V$ の基底 $\{\bm{v}_1, \ldots, \bm{v}_n\}$ に対し，基底同士
+の内積からなる行列 $G=\left[ (\bm{v}_i, \bm{v}_j)\right]$ を Gram 行列
+という．$G$ は正定値対称行列である．つまり，${}^{t}G =
+G$ かつ $\bm{0}$ でない全ての $\bm{x} \in \mathbb{R}^n$ に対し
+て ${}^{t}\bm{x} G \bm{x} >0$ である．Gram 行列は内積の計算を
+\[
+  \left( \sum_{i=1}^{n} x_i \bm{v}_i,\;  \sum_{i=1}^{n} y_i
+    \bm{v}_i\right)  = {}^{t}\bm{x} G \bm{y} \quad \left( \bm{x} =\left[
+    \begin{array}{c}
+      x_1\\
+      \vdots\\
+      x_n
+    \end{array}
+  \right], \; \bm{y} = \left[
+    \begin{array}{c}
+      y_1\\
+      \vdots\\
+      y_n
+    \end{array}
+  \right]\right)
+\]
+と行列の積に帰着させる．GSO によって得られる直交基底や正規直交基底は，
+はじめに与えられた基底 $\{\bm{v}_1, \ldots, \bm{v}_n\}$ の1次結合で書け
+るので，その係数たちを $G$ を用いて明示する．
+
+
+
+\begin{theorem}\label{thm:formula}
+  $\{\bm{v}_1, \ldots, \bm{v}_n\}$ を実内積空間 $V$ の基底とし，そ
+  の Gram 行列を $G=\left[ g_{ij}\right]$ とする．
+  \[
+    \bm{w}_1= \bm{v}_1, \quad \bm{w}_k =
+    \frac{1}{\left|G^{(k-1)}\right|}\left|
+      \begin{array}{ccc}
+        g_{11} & \cdots & g_{1k}\\
+        \vdots & \ddots & \vdots\\
+        g_{k-1,1} & \cdots & g_{k-1, k}\\
         \bm{v}_1 & \cdots & \bm{v}_k
       \end{array}
-    \right| \; ( 2 \leq k \leq n)
+    \right| =  \frac{1}{\left|G^{(k-1)}\right|} \sum_{i=1}^{k}
+    \tilde{g}^{(k)}_{ik} \bm{v}_i \quad ( 2 \leq k \leq n)
   \]
-  とすれば，$\bm{w}_1, \ldots, \bm{w}_n$ は互いに直交する．さらに，
+  とすれば，$\{\bm{w}_1, \ldots, \bm{w}_n\}$ は GSO によって得られる $V$ の直交基底である．さらに，
   \[
     (\bm{w}_1, \bm{w}_1) = g_{11}, \quad (\bm{w}_k, \bm{w}_k) =
     \frac{\left| G^{(k)}\right|}{\left|G^{(k-1)}\right|} \; (2 \leq k \leq n)
@@ -63,9 +132,12 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
   となる．これより
   \[
     \bm{u}_1 = \frac{\bm{w}_1}{\sqrt{g_{11}}}, \quad \bm{u}_k =
-    \sqrt{\frac{\left|G^{(k-1)}\right|}{\left|G^{(k)}\right|}}~ \bm{w}_k \; (2 \leq k \leq n)
+    \sqrt{\frac{\left|G^{(k-1)}\right|}{\left|G^{(k)}\right|}}~
+    \bm{w}_k \; (2 \leq k \leq n)
   \]
-  とすれば，$\{\bm{u}_1, \ldots, \bm{u}_n\}$ は $V$ の正規直交基底である．つまり，
+  とすれば，$\{\bm{u}_1, \ldots, \bm{u}_n\}$ は
+  $\{\bm{w}_1, \ldots, \bm{w}_n\}$ を正規化した $V$ の正規直交基底であ
+  る．つまり，
   \[
     \mu_{ij} = \frac{\tilde{g}^{(j)}_{ij}}{\tilde{g}^{(j)}_{jj}}
     = \frac{\tilde{g}^{(j)}_{ij}}{\left|G^{(j-1)}\right|}, \quad
@@ -98,18 +170,16 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
     \left( \bm{v}_1 , \bm{v}_2, \cdots, \bm{v}_n\right)MN
   \end{aligned}
   \]
-\end{theorem*}
+\end{theorem}
 
 \begin{proof}
-  Gram-Shcmidt の正規直交化法により
+  $\{\bm{v}_1, \ldots, \bm{v}_n\}$ から GSO により得られる直交基底
+  を $\{\bm{w}_1, \ldots, \bm{w}_n\}$ とする．つまり，
   \[
     \bm{w}_1 = \bm{v}_1, \quad \bm{w}_k = \bm{v}_k - \sum_{i=1}^{k-1}
     \frac{(\bm{v}_k, \bm{w}_{i})}{(\bm{w}_i,\bm{w}_i)}\bm{w}_i \; (2 \leq k \leq n)
   \]
-  \[
-    \bm{u}_i = \frac{\bm{w}_i}{\|\bm{w}_i\|} \; (1 \leq i \leq n)
-  \]
-  とすれば，$\{\bm{u}_1, \ldots, \bm{u}_n\}$ は $V$ の正規直交基底となる．このとき，各 $k=2,\ldots, n$ に対して
+  とする．このとき，各 $k=2,\ldots, n$ に対して
   \[
     \langle \bm{w}_1, \ldots, \bm{w}_{k-1}\rangle =\langle \bm{v}_1,
     \ldots, \bm{v}_{k-1}\rangle
@@ -147,11 +217,11 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
   \[
     (\bm{v}_1, \bm{w}_k) = (\bm{v}_2, \bm{w}_k) = \cdots = (\bm{v}_{k-1}, \bm{w}_k) = 0
   \]
-  である．従って，$\{\bm{e}_{1}, \ldots,
-  \bm{e}_k\}$ を $\mathbb{R}^k$ の標準基底とすれば，各 $i=1,
+  である．従って，$\{\bm{e}^k_{1}, \ldots,
+  \bm{e}^k_k\}$ を $\mathbb{R}^k$ の標準基底とすれば，各 $i=1,
   \ldots, k-1$ に対して
   \[
-    0  =(\bm{v}_i, \bm{w}_k) = {}^{t}\bm{e}_{i}
+    0  =(\bm{v}_i, \bm{w}_k) = {}^{t}\bm{e}^k_{i}
     G^{(k)} \left[
       \begin{array}{c}
         \mu_{1k}\\
@@ -189,7 +259,7 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
         g_{k-1,1} & \cdots & g_{k-1,k}\\
         \bm{e}_1 & \cdots & \bm{e}_k
       \end{array}
-    \right| = m_k \sum_{j=1}^{k} \tilde{g}^{(k)}_{jk} \bm{e}_j
+    \right| = m_k \sum_{j=1}^{k} \tilde{g}^{(k)}_{jk} \bm{e}^k_j
     = m_k \left[
       \begin{array}{c}
         \tilde{g}^{(k)}_{1k}\\
@@ -198,7 +268,7 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
       \end{array}
     \right]\quad ( m_k \in \mathbb{R})
   \]
-  $\bm{\mu}_k$ の $\bm{e}_k$ 成分は $1$ なので
+  $\bm{\mu}_k$ の $\bm{e}^k_k$ 成分は $1$ なので
   $m_k = 1/\tilde{g}^{(k)}_{kk} = 1/\left|G^{(k-1)}\right|$ である．以
   上から，$k=2, \ldots, n$ に対して
   \[
@@ -218,9 +288,9 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
     \begin{aligned}
       (\bm{w}_k, \bm{w}_k) &= {}^{t}\bm{\mu}_k G^{(k)} \bm{\mu}_k = {}^{t} \bm{\mu}_k \left[
         \begin{array}{c}
-          {}^{t}\bm{e}_1 G^{(k)}\bm{\mu}_k\\
+          {}^{t}\bm{e}^k_1 G^{(k)}\bm{\mu}_k\\
           \vdots \\
-          {}^{t} \bm{e}_{k} G^{(k)}\bm{\mu}_k\\
+          {}^{t} \bm{e}^k_{k} G^{(k)}\bm{\mu}_k\\
         \end{array}
       \right] = \left[
         \begin{array}{cccc}
@@ -231,10 +301,10 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
           0\\
           \vdots\\
           0\\
-          {}^{t}\bm{e}_k G^{(k)}\bm{\mu}_k
+          {}^{t}\bm{e}^k_k G^{(k)}\bm{\mu}_k
         \end{array}
       \right]\\
-      &= {}^{t} \bm{e}_k G^{(k)}\bm{\mu}_k = \sum_{i=1}^{k-1} g_{ki} \mu_{ik} + g_{kk}
+      &= {}^{t} \bm{e}^k_k G^{(k)}\bm{\mu}_k = \sum_{i=1}^{k-1} g_{ki} \mu_{ik} + g_{kk}
       = \frac{1}{\left| G^{(k-1)}\right|}\sum_{i=1}^{k}g_{ik} ~ \tilde{g}^{(k)}_{ik}
       = \frac{\left| G^{(k)}\right|}{\left|G^{(k-1)}\right|}
     \end{aligned}
@@ -322,89 +392,380 @@ $G$ の $k$ 次主対角行列を $G^{(k)}$ とし，その $(i,j)$ 余因子を
 \right]$ の解でもある．
 \end{remark}
 
-\newpage
-
-\chead{行基本変形による直交基底の計算法}
-
-実内積空間の Gram 行列 $G$ から行基本変形を用いて直交基底への変換行列 $M$ を計算できる．
-
-$G$ は正定値対称行列なので，$n \times 2n$ 行列 $\left[ G \ | \
-  E_n\right]$ に「ある行に別の行のスカラー倍を加える」という行基本変形
-だけを有限回施して左 $n$ 列が上三角行列 $U$ となるように変形できる． こ
-のとき，$\left[ G \ | \ E_n\right] \to \left[ U \ | \ {}^{t}M \right]$
-となる．さらに，$U$ の対角成分には直交基底の2乗ノルムが並ぶ．
-
-\begin{example}
-  $4$ 次元実内積空間 $V$ の基底 $\{\bm{v}_1, \bm{v}_2, \bm{v}_3,
-  \bm{v}_4\}$ の Gram 行列 $G=\left[ (\bm{v}_i, \bm{v}_j)\right]$ が
+\begin{example}\label{exmp:3-dim}
+  $3$ 次元実内積空間 $V$ の基底 $\{\bm{v}_1, \bm{v}_2,
+  \bm{v}_3\}$ の Gram 行列が以下のように与えられるとする．
   \[
-    G =\left[
-      \begin{array}{rrrr}
-        27 & 8 & 5 & 14\\
-        8 & 3 & 2 & 4\\
-        5 & 2 & 13 & 5\\
-        14 & 4 & 5 & 11
+    G= \left[(\bm{v}_i, \bm{v}_j\right] = \left[
+      \begin{array}{rrr}
+        10 & 4 & 3\\
+        4 & 2 & 1\\
+        3 & 1 & 5
       \end{array}
     \right]
   \]
-  であるとする．このとき，直交基底 $\{\bm{w}_1, \ldots, \bm{w}_n\}$ を
-  計算しよう．$4 \times 8$ 行列 $\left[ G \ | \
-    E_4\right]$ に「ある行に別の行のスカラー倍を加える」という行基本変
-  形だけを適宜施して
+  定理\ref{thm:formula}から，GSO により得られる直交基底
+  $\{\bm{w}_1, \bm{w}_2, \bm{w}_3\}$ は以下のように計算できる．
   \[
+    \begin{aligned}
+      \bm{w}_1 &=\bm{v}_1\\
+      \bm{w}_2 &= \frac{1}{10}\left|
+        \begin{array}{cc}
+          10  & 4\\
+          \bm{v}_1 & \bm{v}_2
+        \end{array}
+      \right| = \frac{1}{10}\left( -4\bm{v}_1 + 10 \bm{v}_2\right) =
+      -\frac{2}{5}\bm{v}_1 + \bm{v}_2\\
+      \bm{w}_3 &= \frac{1}{\left|
+          \begin{array}{rr}
+            10 & 4\\
+            4 & 2
+          \end{array}
+        \right|} \left|
+        \begin{array}{rrr}
+          10 & 4 & 3\\
+          4 & 2 & 1\\
+          \bm{v}_1 & \bm{v}_2 & \bm{v}_3
+        \end{array}
+      \right| = \frac{1}{4} \left( \left|
+          \begin{array}{rr}
+            4 & 3\\
+            2 & 1
+          \end{array}
+        \right| \bm{v}_1 - \left|
+          \begin{array}{rr}
+            10 & 3\\
+            4 & 1
+          \end{array}
+        \right|\bm{v}_2 \right) + \bm{v}_3\\
+      &= -\frac{1}{2}\bm{v}_1 + \frac{1}{2}\bm{v}_2 + \bm{v}_3
+    \end{aligned}
+  \]
+  あるいは，その後の注意で述べたように方程式 $\left[
+      \begin{array}{rr}
+        10 & 4\\
+        4 & 2
+      \end{array}
+    \right] \left[
+      \begin{array}{c}
+        \mu_{13}\\
+        \mu_{23}
+      \end{array}
+    \right]= -\left[
+      \begin{array}{r}
+        3\\
+        1
+      \end{array}
+    \right]$ を解いて
+  \[
+    \bm{w}_3 = \mu_{13} \bm{v}_1 + \mu_{23} \bm{v}_2 + \bm{v}_3 =
+    -\frac{1}{2}\bm{v}_1 + \frac{1}{2}\bm{v}_2 + \bm{v}_3
+  \]
+  と計算することもできる．さらに，それぞれの自己内積は
+  \[
+    (\bm{w}_1, \bm{w}_2) = 10, \quad (\bm{w}_2, \bm{w}_2) = \frac{\left|
+        \begin{array}{rr}
+          10 & 4\\
+          4 & 2
+        \end{array}
+      \right|}{10} = \frac{2}{5}, \quad (\bm{w}_3, \bm{w}_3) = \frac{\left|
+        \begin{array}{rrr}
+          10 & 4 & 3\\
+          4 & 2 & 1\\
+          3 & 1 & 5
+        \end{array}
+      \right|}{\left|
+        \begin{array}{rr}
+          10 & 4\\
+          4 & 2
+        \end{array}
+      \right|} =4
+  \]
+  である．従って，GSO で得られる $V$ の正規直交基底 $\{\bm{u}_1, \bm{u}_2, \bm{u}_3\}$ は
+  \[
+    \bm{u}_1 = \frac{1}{\sqrt{10}}~\bm{w}_1, \quad \bm{u}_2 =
+    \frac{\sqrt{10}}{2}~\bm{w}_2 , \quad \bm{u}_3 = \frac{1}{2}~\bm{w}_3
+  \]
+  である．つまり，基底間の変換は以下のように書ける．
+  \[
+    (\bm{w}_1, \bm{w}_2, \bm{w}_3) = (\bm{v}_1, \bm{v}_2, \bm{v}_3) \left[
+      \begin{array}{rrr}
+        1 & -\frac{2}{5} & -\frac{1}{2}\\
+        0 & 1 & \frac{1}{2}\\
+        0 & 0 & 1
+      \end{array}
+    \right], \quad (\bm{u}_1, \bm{u}_2, \bm{u}_3) = (\bm{w}_1, \bm{w}_2, \bm{w}_3)
     \left[
-      \begin{array}{rrrr|rrrr}
-        27 & 8 & 5 & 14 & 1 & 0 & 0 & 0\\
-        8 & 3 & 2 & 4 & 0 & 1 & 0 & 0 \\
-        5 & 2 & 13 & 5 & 0 & 0 & 1 & 0\\
-        14 & 4 & 5 & 11 & 0 & 0 & 0 & 1
-      \end{array}
-    \right] \longrightarrow \left[
-      \begin{array}{rrrr|rrrr}
-        27 & 8 & 5 & 14 & 1 & 0 & 0 & 0\\
-        0 & \frac{17}{27} & \frac{14}{27} & -\frac{4}{27} & -\frac{8}{27} & 1 & 0 & 0\\
-        0 & 0 & \frac{198}{17} & \frac{43}{17} & \frac{1}{17} & -\frac{14}{17} & 1 & 0\\
-        0 & 0 & 0 & \frac{625}{198} & -\frac{119}{198} & \frac{41}{99} & -\frac{43}{198} & 1
+      \begin{array}{rrr}
+        \frac{1}{\sqrt{10}} & 0 & 0\\
+        0 & \frac{\sqrt{10}}{2} & 0\\
+        0 & 0 & \frac{1}{2}
       \end{array}
     \right]
   \]
-  とできる．これより
-  \[
-    U = \left[
-      \begin{array}{rrrr}
-         27 & 8 & 5 & 14 \\
-        0 & \frac{17}{27} & \frac{14}{27} & -\frac{4}{27}\\
-        0 & 0 & \frac{198}{17} & \frac{43}{17}\\
-        0 & 0 & 0 & \frac{625}{198}
-      \end{array}
-    \right], \quad M = \left[
-      \begin{array}{rrrr}
-        1 & -\frac{8}{27} & \frac{1}{17} & -\frac{119}{198}\\
-        0 & 1 & -\frac{14}{17} & \frac{41}{99}\\
-        0 & 0 & 1 & -\frac{43}{198}\\
-        0 & 0 & 0 & 1
-      \end{array}
-    \right]
-  \]
-  である．従って，
-  \[
-    (\bm{w}_1, \bm{w}_2, \bm{w}_3, \bm{w}_4) = (\bm{v}_1, \bm{v}_2, \bm{v}_3, \bm{v}_4) M
-  \]
-  とすれば，$\{\bm{w}_1, \bm{w}_2, \bm{w}_3, \bm{w}_4\}$ は $V$ の直交
-  基底である．さらに，$U$ の対角成分がそれぞれの $2$ 乗ノルムである．つまり，
-  \[
-    (\bm{w}_1, \bm{w}_1) = 27, \quad (\bm{w}_2, \bm{w}_2) = \frac{17}{27}, \quad
-    (\bm{w}_3, \bm{w}_3) = \frac{198}{17}, \quad (\bm{w}_4, \bm{w}_4) = \frac{625}{198}
-  \]
-  なので
-  \[
-    \bm{u}_1 = \sqrt{\frac{1}{27}}\bm{w}_1, \quad \bm{u}_2 = \sqrt{\frac{27}{17}}\bm{w}_2, \quad
-    \bm{u}_3 = \sqrt{\frac{17}{198}}\bm{w}_3, \quad \bm{u}_4=\sqrt{\frac{198}{625}} \bm{w}_4
-  \]
-  とすれば，$\{\bm{u}_1, \bm{u}_2, \bm{u}_3, \bm{u}_4\}$ は $V$ の正規直交基底である．
 \end{example}
 
+\section{行基本変形による計算}
+
+
+定理\ref{thm:formula}の直交基底への変換行列 $M$ は $n \times
+2n$ 行列 $\left[ G | E\right]$ に行基本変形「ある行に別の行のスカラー倍
+を加える」を有限回施すことで計算することでもできる．例えば，
+例\ref{exmp:3-dim} の $G$ に対しては
+\[
+  \begin{aligned}
+    \left[ G \ | \ E_3\right]  & =\left[
+      \begin{array}{rrr|rrr}
+        10 & 4 & 3 & 1 & 0 & 0\\
+        4 & 2 & 1 & 0 & 1 & 0\\
+        3 & 1 & 5 & 0 & 0 & 1
+      \end{array}
+    \right]   \to  \left[
+      \begin{array}{rrr|rrr}
+        10 & 4 & 3 & 1 & 0 & 0\\
+        0 & \frac{2}{5} & -\frac{1}{5} & -\frac{2}{5} & 1 & 0\\
+        0 & -\frac{1}{5} & \frac{41}{10} & -\frac{3}{10} & 0 & 1
+      \end{array}
+    \right]\\
+    &\to \left[
+      \begin{array}{rrr|rrr}
+        10 & 4 & 3 & 1 & 0 & 0\\
+        0 & \frac{2}{5} & -\frac{1}{5} & -\frac{2}{5} & 1 & 0\\
+        0 & 0 & 4 & -\frac{1}{2} & \frac{1}{2} & 1
+      \end{array}
+\right]
+  \end{aligned}
+\]
+と左 $3$ 列が上三角行列になるように変形できる．このとき，右 $3$ 列の転置
+行列が変換行列 $M$ である．つまり，
+\[
+  M = \left[
+    \begin{array}{rrr}
+      1 & -\frac{2}{5} & -\frac{1}{2}\\
+      0 & 1 & \frac{1}{2}\\
+      0 & 0 & 1
+    \end{array}
+  \right]
+\]
+である．さらに，変形後の左 $3$ 列の上三角行列の対角成分には直交基
+底 $\{\bm{w}_1, \bm{w}_2, \bm{w}_3\}$ の自己内積が並ぶ．つまり，
+\[
+  (\bm{w}_1, \bm{w}_1) = 10, \quad (\bm{w}_2, \bm{w}_2) = \frac{2}{5}, \quad
+  (\bm{w}_3, \bm{w}_3) = 4
+\]
+である．これは\cite{gauss}の結果をほんの少しだけ拡張している．
+この計算過程の正当性を説明する．\\
+
+
+$G=\left[ g_{ij}\right]$ を実内積空間 $V$
+の基底$\{\bm{v}_1, \ldots, \bm{v}_n\}$ の Gram 行列とする．$G$ は正定値
+対称行列なので，行基本変形の「 $i$ 行の $c$ 倍を $j$ 行に加え
+る $(i<j)$」のみを有限回施すことで上三角行列 $U$ へ変形できる（補
+題\ref{lem:rowadd}として後述）．そのような行基本変形に対応する基本行列
+は，いずれも全ての対角成分が $1$の下三角行列なので，それら全ての積 $L$
+も対角成分が全て $1$ の下三角行列であり，$U=LG$ となる．従っ
+て，$\left[ G \ | \ E \right]$ に上記のような行基本変形を施せば
+\[
+  \left[ G \ | \ E\right] \to L\left[ G \ | \ E \right] = \left[ LG \
+    |\ L \right] = \left[ U \ | \ L\right]
+\]
+となる．ここで，$M={}^{t}L$ として
+\[
+  \left( \bm{w}_1, \bm{w}_2, \ldots \bm{w}_n \right) = \left(
+    \bm{v}_1, \bm{v}_2, \ldots, \bm{v}_n\right) M
+\]
+と基底を変換し，$\{\bm{w}_1, \ldots, \bm{w}_n\}$ の Gram 行列を $H$ と
+すると $H$ は対称行列であり，
+\[
+  H=\left[ (\bm{w}_i, \bm{w}_j)\right] = {}^{t}M G M = L G M = U M
+\]
+より $H$ は上三角行列でもある．従って，$H$ は対角行列なの
+で $\{\bm{w}_1, \ldots, \bm{w}_n\}$ は $V$ の直交基底である．また，$M$
+の対角成分は全て $1$ なので，$H$ と $U$ の対角成分は等しい．つま
+り，$(\bm{w}_i, \bm{w}_i)$ は $U$ の $(i,i)$ 成分に等しい．さらに，$M$
+の対角成分が全て $1$ であることはこの $\{\bm{w}_1, \ldots,
+\bm{w}_n\}$ が定理\ref{thm:formula} の直交基底に等しいことを表してい
+る．
+
+\newpage
+
+先の説明で省いた部分を補題\ref{lem:rowadd}として示しておく．
+
+\begin{lemma}\label{lem:rowadd}
+  正定値対称行列 $G$ は，$i <j$ である行基本変形
+  「 $i$ 行の $c$ 倍を $j$ 行に加える」のみを有限回施すことで，上三角行
+  列へと変形できる．
+\end{lemma}
+
+\begin{proof}
+
+  $G=\left[ g_{ij}\right]$ とし，その次数 $n$ に関する帰納法によ
+  る．$n=1$ のときは明らか．$n \geq 2$ とする．$G$ の正定値性か
+  ら $g_{11} >0$ なので，$G$ に行基本変形「$1$ 行の $-g_{i1}/g_{11}$ 倍
+  を $i$ 行に加える」を $i=2, \ldots, n$として順次施して
+  \[
+   G \to L G=\left[
+      \begin{array}{cc}
+        g_{11} & \bm{\ast}\\
+        \bm{0} & G'
+      \end{array}
+    \right]
+  \]
+  と変形できる．ここで，$L$ は上記の行基本変形に対応する基本行列たち
+  の積であり，下三角行列であ
+  る．$H:=L G~{}^{t}L$ は対称行列なので
+  \[
+    L = \left[
+      \begin{array}{cc}
+        1 & \bm{0}\\
+        \bm{\ast} & L'
+      \end{array}
+    \right]
+  \]
+  とおくと，
+  \[
+    H = \left[
+      \begin{array}{cc}
+        g_{11}  & \ast \\
+        \bm{0} & G'
+      \end{array}
+    \right] \left[
+      \begin{array}{cc}
+        1 & \ast\\
+        \bm{0} & {}^{t}L'
+      \end{array}
+    \right] = \left[
+      \begin{array}{cc}
+        g_{11} & \ast\\
+        \bm{0} & G'~{}^{t}L'
+      \end{array}
+    \right] = \left[
+      \begin{array}{cc}
+        g_{11} & \bm{0}\\
+        \bm{0} & H'
+      \end{array}
+    \right]
+  \]
+  となり，$H':=G'~{}^{t}L'$ も対称行列である．さらに，任意の $\bm{x} \in
+  \mathbb{R}^n$ に対して ${}^{t}L \bm{x} \in \mathbb{R}^n$ なの
+  で，$G$ の正定値性から
+  \[
+    {}^{t}\bm{x} H \bm{x} = 
+    {}^{t}\bm{x}\left( L G~ {}^{t}L \right)\bm{x} = {}^{t}\left(
+      {}^{t}L \bm{x}\right) G \left({}^{t}L \bm{x}\right) >0
+  \]
+  より，$H$ は正定値である．従って，$H'$ も正定値対称行列なので，帰納法
+  の仮定から行基本変形「$i$ 行の $c$ 倍を $j$ 行に加える $(i<j)$」のみ
+  を有限回施して上三角行列 $U_1'$ へと変形でき，そのような行基本変形に
+  対応する基本行列たちの積を $L_1'$ とすれば $U'=L_1'H' =
+  L_1'G'~{}^{t}L'$ である．${}^{t}L'$ は対角成分が全て $1$ の上三角行列
+  なので正則で，その逆行列 $\left({}^{t}L'\right)^{-1}$ は上三角行列だ
+  から
+  \[
+    L_1' G' = U'\left( {}^{t}L'\right)^{-1}
+  \]
+  は上三角行列である．よって，
+  \[
+    L_1 = \left[
+      \begin{array}{cc}
+        1 & \bm{0}\\
+        \bm{0} & L_1'
+      \end{array}
+    \right]
+  \]
+  とおけば
+  \[
+    L_1 L G = \left[
+      \begin{array}{cc}
+        1 & \bm{0}\\
+        \bm{0} & L_1'
+      \end{array}
+    \right] \left[
+      \begin{array}{cc}
+        g_{11} & \bm{\ast} \\
+        \bm{0} & G'
+      \end{array}
+    \right] = \left[
+      \begin{array}{cc}
+        g_{11} & \bm{\ast}\\
+        \bm{0} & L_1' G'
+      \end{array}
+    \right]
+  \]
+  より，$L_1 L G$ は上三角行列である．
+\end{proof}
+
+\newpage
+
+\begin{example}\renewcommand{\arraystretch}{1.2}
+  
+  $2$ 次以下の多項式のなすベクトル空間 $\mathbb{R}[x]_2$ に
+  \[
+    (f,g) = \int_{0}^{1} f(x) g(x) dx \quad \left( f, g \in \mathbb{R}[x]_2\right)
+  \]
+  として内積を定める．この内積空間の直交基底を求めるために，基
+  底 $\{1, x, x^2\}$ を直交化する．まず，$i,j=0,1,2$ に対して
+  \[
+    (x^i, x^j) = \int_{0}^{1} x^{i+j} \ dx = \left[
+      \frac{1}{i+j+1}x^{i+j+1} \right]_{0}^{1}= \frac{1}{i+j+1}
+  \]
+  より，基底 $\{1, x, x^2\}$ の Gram 行列は
+    \[
+      G= \left[ \frac{1}{i+j-1} \right] =\left[
+        \begin{array}{ccc}
+          1 & \frac{1}{2} & \frac{1}{3}\\
+          \frac{1}{2} & \frac{1}{3} & \frac{1}{4}\\
+          \frac{1}{3} & \frac{1}{4} & \frac{1}{5}
+        \end{array}
+      \right]
+    \]
+  である．$\left[ G \ | \ E_3\right]$ を変形する．
+    \[
+      \left[
+        \begin{array}{ccc|ccc}
+          1 & \frac{1}{2} & \frac{1}{3}& 1 & 0 & 0\\
+          \frac{1}{2} & \frac{1}{3} & \frac{1}{4} & 0 & 1 & 0\\
+          \frac{1}{3} & \frac{1}{4} & \frac{1}{5} & 0 & 0 & 1
+        \end{array}
+      \right] \to \left[
+        \begin{array}{ccc|rcc}
+          1 & \frac{1}{2} & \frac{1}{3} & 1 & 0 & 0\\
+          0 & \frac{1}{12} & \frac{1}{12} & -\frac{1}{2} & 1 & 0\\
+          0 & \frac{1}{12} & \frac{4}{45} & -\frac{1}{3} & 0 & 1
+        \end{array}
+      \right] \to \left[
+        \begin{array}{ccc|rrc}
+          1 & \frac{1}{2} & \frac{1}{3} & 1 & 0 & 0\\
+          0 & \frac{1}{12} & \frac{1}{12} & -\frac{1}{2} & 1 & 0\\
+          0 & 0 & \frac{1}{180} & \frac{1}{6} & -1 & 1
+        \end{array}
+      \right]
+    \]
+  これより
+  \[
+    (f_1, f_2, f_3) = \left( 1, x, x^2\right) \left[
+      \begin{array}{rrr}
+        1 & -\frac{1}{2} & \frac{1}{6}\\
+        0 & 1 & -1\\
+        0 & 0 & 1
+      \end{array}
+    \right] = \left( 1, \quad -\frac{1}{2} + x, \quad \frac{1}{6} -x+x^2\right)
+  \]
+  とすれば，$\{f_1, f_2, f_3\}$ は直交基底で，各多項式の自己内積は以下の通りである．
+  \[
+    (f_1, f_1) = 1, \quad (f_2, f_2) = \frac{1}{12}, \quad (f_3,f_3) = \frac{1}{180}
+  \]
+
+
+ \renewcommand{\arraystretch}{1}
+\end{example}
+
+
+
 \begin{thebibliography}{9}
+
+\bibitem{miyake} 三宅敏恒，「入門線形代数」(1991)，培風館．
+  
 \bibitem{gauss} L.~Pursell and S.~Y.~Trimble, ``Gram-Schmidt
   Orthogonalization by Gauss Elimination'', The American Mathematical
   Monthly, \textbf{98}, No.6 (1991), p.544-549.
